@@ -2,26 +2,11 @@ import { useState } from 'react';
 
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
 
-const FeedbackCategory = ({ category, number }) => (
+const StatisticLine = ({ category, value }) => (
   <p>
-    {category}: {number}
+    {category}: {value}
   </p>
 );
-
-const TotalFeedback = ({ totalFeedback }) => <p>All: {totalFeedback}</p>;
-
-const AverageScore = ({ good, bad, totalFeedback }) => {
-  if (totalFeedback <= 0) return <p>Average: 0</p>;
-
-  const feedbackPoints = good - bad;
-  return <p>Average: {feedbackPoints / totalFeedback}</p>;
-};
-
-const PositiveFeedback = ({ good, totalFeedback }) => {
-  if (totalFeedback <= 0) return <p>Positive: 0%</p>;
-
-  return <p>Positive: {(good / totalFeedback) * 100}%</p>;
-};
 
 const Statistics = ({ good, neutral, bad, totalFeedback }) => {
   if (totalFeedback <= 0) {
@@ -33,15 +18,18 @@ const Statistics = ({ good, neutral, bad, totalFeedback }) => {
     );
   }
 
+  const averageScore = (good - bad) / totalFeedback;
+  const positivePercentage = (good / totalFeedback) * 100 + '%';
+
   return (
     <>
       <h2>Statistics</h2>
-      <FeedbackCategory category={'Good'} number={good} />
-      <FeedbackCategory category={'Neutral'} number={neutral} />
-      <FeedbackCategory category={'Bad'} number={bad} />
-      <TotalFeedback totalFeedback={totalFeedback} />
-      <AverageScore good={good} bad={bad} totalFeedback={totalFeedback} />
-      <PositiveFeedback good={good} totalFeedback={totalFeedback} />
+      <StatisticLine category={'Good'} value={good} />
+      <StatisticLine category={'Neutral'} value={neutral} />
+      <StatisticLine category={'Bad'} value={bad} />
+      <StatisticLine category={'All'} value={totalFeedback} />
+      <StatisticLine category={'Average'} value={averageScore} />
+      <StatisticLine category={'Positive'} value={positivePercentage} />
     </>
   );
 };
