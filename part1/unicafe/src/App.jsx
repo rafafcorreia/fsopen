@@ -8,10 +8,26 @@ const FeedbackCategory = ({ category, number }) => (
   </p>
 );
 
+const TotalFeedback = ({ totalFeedback }) => <p>All: {totalFeedback}</p>;
+
+const AverageScore = ({ good, bad, totalFeedback }) => {
+  if (totalFeedback <= 0) return <p>Average: 0</p>;
+
+  const feedbackPoints = good - bad;
+  return <p>Average: {feedbackPoints / totalFeedback}</p>;
+};
+
+const PositiveFeedback = ({ good, totalFeedback }) => {
+  if (totalFeedback <= 0) return <p>Positive: 0%</p>;
+
+  return <p>Positive: {(good / totalFeedback) * 100}%</p>;
+};
+
 const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
+  const totalFeedback = good + neutral + bad;
 
   return (
     <div>
@@ -24,6 +40,9 @@ const App = () => {
       <FeedbackCategory category={'Good'} number={good} />
       <FeedbackCategory category={'Neutral'} number={neutral} />
       <FeedbackCategory category={'Bad'} number={bad} />
+      <TotalFeedback totalFeedback={totalFeedback} />
+      <AverageScore good={good} bad={bad} totalFeedback={totalFeedback} />
+      <PositiveFeedback good={good} totalFeedback={totalFeedback} />
     </div>
   );
 };
