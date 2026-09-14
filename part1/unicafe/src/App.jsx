@@ -24,6 +24,15 @@ const PositiveFeedback = ({ good, totalFeedback }) => {
 };
 
 const Statistics = ({ good, neutral, bad, totalFeedback }) => {
+  if (totalFeedback <= 0) {
+    return (
+      <>
+        <h2>Statistics</h2>
+        <p>No feedback given</p>
+      </>
+    );
+  }
+
   return (
     <>
       <h2>Statistics</h2>
