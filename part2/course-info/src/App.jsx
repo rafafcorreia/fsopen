@@ -6,6 +6,19 @@ const Part = ({ part }) => (
   </p>
 );
 
+const Total = ({ parts }) => {
+  let total = 0;
+  parts.forEach((part) => {
+    total += part.exercises;
+  });
+
+  return (
+    <strong>
+      <p>total of {total} exercises</p>
+    </strong>
+  );
+};
+
 const Content = ({ parts }) =>
   parts.map((part) => <Part key={part.id} part={part} />);
 
@@ -14,6 +27,7 @@ const Course = ({ course }) => {
     <>
       <Header text={course.name} />
       <Content parts={course.parts} />
+      <Total parts={course.parts} />
     </>
   );
 };
