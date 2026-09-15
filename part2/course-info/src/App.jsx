@@ -7,14 +7,13 @@ const Part = ({ part }) => (
 );
 
 const Total = ({ parts }) => {
-  let total = 0;
-  parts.forEach((part) => {
-    total += part.exercises;
-  });
+  const total = parts.reduce((p, c) => ({
+    exercises: p.exercises + c.exercises,
+  }));
 
   return (
     <strong>
-      <p>total of {total} exercises</p>
+      <p>total of {total.exercises} exercises</p>
     </strong>
   );
 };
