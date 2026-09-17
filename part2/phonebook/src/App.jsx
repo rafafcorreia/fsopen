@@ -9,6 +9,15 @@ const App = () => {
     const cleanedNewName = newName.trim();
     if (!cleanedNewName) return;
 
+    const isSamePerson = persons.some((person) => {
+      return person.name.toUpperCase() == cleanedNewName.toUpperCase();
+    });
+
+    if (isSamePerson) {
+      alert(`${cleanedNewName} is already added to phonebook`);
+      return;
+    }
+
     const newPerson = { name: cleanedNewName };
     const updatedPersons = persons.concat(newPerson);
     setPersons(updatedPersons);
