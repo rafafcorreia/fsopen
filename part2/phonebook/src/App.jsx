@@ -36,6 +36,7 @@ const App = () => {
     const updatedPersons = persons.concat(newPerson);
     setPersons(updatedPersons);
     setNewName('');
+    setNewNumber('');
   };
 
   const handleChangeName = (event) => {
