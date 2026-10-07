@@ -1,7 +1,10 @@
-const Notification = ({ message }) => {
+const Notification = ({ notification }) => {
+  if (!notification) return null;
+
+  const { message, success } = notification;
+
   const style = {
     fontSize: 20,
-    color: 'green',
     background: 'lightgrey',
     padding: 10,
     borderRadius: 5,
@@ -9,9 +12,10 @@ const Notification = ({ message }) => {
     marginBottom: 20,
   };
 
-  if (message === null) return;
+  const successStyle = { ...style, color: 'green' };
+  const errorStyle = { ...style, color: 'red' };
 
-  return <div style={style}>{message}</div>;
+  return <div style={success ? successStyle : errorStyle}>{message}</div>;
 };
 
 export default Notification;

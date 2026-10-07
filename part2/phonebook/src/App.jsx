@@ -10,11 +10,18 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [nameFilter, setNameFilter] = useState('');
-  const [successMessage, setSuccessMessage] = useState(null);
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     personsService.getAll().then((persons) => setPersons(persons));
   }, []);
+
+  const notify = (message, success = true) => {
+    setNotification({ message, success });
+    setTimeout(() => {
+      setNotification(null);
+    }, 5_000);
+  };
 
   const filteredPersons = nameFilter
     ? persons.filter((person) =>
@@ -30,7 +37,7 @@ const App = () => {
     const cleanedNewNumber = newNumber.trim();
 
     const existingPerson = persons.find(
-      (person) => person.name.toUpperCase() == cleanedNewName.toUpperCase(),
+      (person) => person.name.toUpperCase() === cleanedNewName.toUpperCase(),
     );
 
     if (!existingPerson) {
@@ -39,13 +46,12 @@ const App = () => {
         setPersons((persons) => persons.concat(person));
         setNewName('');
         setNewNumber('');
-        setSuccessMessage(`Added ${cleanedNewName}`);
-        setTimeout(() => setSuccessMessage(null), 5_000);
+        notify(`Added ${cleanedNewName}`);
       });
       return;
     }
 
-    if (existingPerson.number == cleanedNewNumber) {
+    if (existingPerson.number === cleanedNewNumber) {
       alert(`${cleanedNewName} is already added to phonebook`);
       return;
     }
@@ -56,17 +62,23 @@ const App = () => {
     if (!canReplace) return;
 
     const updatedPerson = { ...existingPerson, number: cleanedNewNumber };
-    personsService.update(updatedPerson).then((person) => {
-      setPersons((persons) =>
-        persons.map((p) => (p.id == person.id ? person : p)),
-      );
-      setSuccessMessage(
-        `Updated ${cleanedNewName}'s number to ${cleanedNewNumber}`,
-      );
-      setTimeout(() => setSuccessMessage(null), 5_000);
-      setNewName('');
-      setNewNumber('');
-    });
+    personsService
+      .update(updatedPerson)
+      .then((person) => {
+        setPersons((persons) =>
+          persons.map((p) => (p.id === person.id ? person : p)),
+        );
+        notify(`Updated ${cleanedNewName}'s number to ${cleanedNewNumber}`);
+        setNewName('');
+        setNewNumber('');
+      })
+      .catch(() => {
+        notify(
+          `Information of ${cleanedNewName} has already been removed from server`,
+          false,
+        );
+        personsService.getAll().then((persons) => setPersons(persons));
+      });
   };
 
   const handleChangeName = (event) => {
@@ -93,7 +105,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-      <Notification message={successMessage} />
+      <Notification notification={notification} />
       <NameFilter nameFilter={nameFilter} onChange={handleChangeNameFilter} />
       <NewPersonForm
         onChangeName={handleChangeName}
