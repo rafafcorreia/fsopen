@@ -54,6 +54,15 @@ const App = () => {
     setNameFilter(event.target.value);
   };
 
+  const handleDelete = (person) => {
+    const canDelete = confirm(`Delete ${person.name}?`);
+    if (!canDelete) return;
+
+    personsService.exclude(person.id).then((deletedPerson) => {
+      setPersons((persons) => persons.filter((p) => p.id !== deletedPerson.id));
+    });
+  };
+
   return (
     <div>
       <h1>Phonebook</h1>
@@ -65,7 +74,7 @@ const App = () => {
         newName={newName}
         newNumber={newNumber}
       />
-      <PersonsList filteredPersons={filteredPersons} />
+      <PersonsList filteredPersons={filteredPersons} onDelete={handleDelete} />
     </div>
   );
 };
