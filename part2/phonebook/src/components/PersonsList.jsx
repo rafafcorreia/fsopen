@@ -3,7 +3,7 @@ const PersonsList = ({ filteredPersons, onDelete }) => {
     <>
       <h2>Persons</h2>
       {filteredPersons.map((person) => (
-        <div key={person.name}>
+        <div key={person.id}>
           {person.name} {person.number}
           <button onClick={() => onDelete(person)}>delete</button>
         </div>

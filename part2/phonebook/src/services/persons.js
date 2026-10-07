@@ -17,8 +17,14 @@ const exclude = (id) => {
     return response.then(response => response.data)
 }
 
+const update = (person) => {
+    const response = axios.put(`${baseUrl}/${person.id}`, person)
+    return response.then(response => response.data)
+}
+
 export default {
     getAll,
     create,
-    exclude
+    exclude,
+    update
 }

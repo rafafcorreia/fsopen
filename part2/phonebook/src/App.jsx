@@ -11,7 +11,7 @@ const App = () => {
   const [nameFilter, setNameFilter] = useState('');
 
   useEffect(() => {
-    personsService.getAll().then((contacts) => setPersons(contacts));
+    personsService.getAll().then((persons) => setPersons(persons));
   }, []);
 
   const filteredPersons = nameFilter
@@ -25,18 +25,37 @@ const App = () => {
     const cleanedNewName = newName.trim();
     if (!cleanedNewName) return;
 
-    const isSamePerson = persons.some((person) => {
-      return person.name.toUpperCase() == cleanedNewName.toUpperCase();
-    });
+    const cleanedNewNumber = newNumber.trim();
 
-    if (isSamePerson) {
+    const existingPerson = persons.find(
+      (person) => person.name.toUpperCase() == cleanedNewName.toUpperCase(),
+    );
+
+    if (!existingPerson) {
+      const newPerson = { name: cleanedNewName, number: cleanedNewNumber };
+      personsService.create(newPerson).then((person) => {
+        setPersons((persons) => persons.concat(person));
+        setNewName('');
+        setNewNumber('');
+      });
+      return;
+    }
+
+    if (existingPerson.number == cleanedNewNumber) {
       alert(`${cleanedNewName} is already added to phonebook`);
       return;
     }
 
-    const newPerson = { name: cleanedNewName, number: newNumber.trim() };
-    personsService.create(newPerson).then((person) => {
-      setPersons(persons.concat(person));
+    const canReplace = confirm(
+      `${cleanedNewName} is already added to phonebook. Replace the old number with a new one?`,
+    );
+    if (!canReplace) return;
+
+    const updatedPerson = { ...existingPerson, number: cleanedNewNumber };
+    personsService.update(updatedPerson).then((person) => {
+      setPersons((persons) =>
+        persons.map((p) => (p.id == person.id ? person : p)),
+      );
       setNewName('');
       setNewNumber('');
     });
@@ -78,5 +97,4 @@ const App = () => {
     </div>
   );
 };
-
 export default App;
