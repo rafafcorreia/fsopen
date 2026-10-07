@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Note from './components/Note';
-import axios from 'axios';
+import notesService from './services/notes';
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -8,10 +8,8 @@ const App = () => {
   const [showAll, setShowAll] = useState(true);
 
   useEffect(() => {
-    console.log('effect');
-    axios.get('http://localhost:3001/notes').then((response) => {
-      console.log('promise fulfilled');
-      setNotes(response.data);
+    notesService.getAll().then((initialNotes) => {
+      setNotes(initialNotes);
     });
   }, []);
 
@@ -19,18 +17,32 @@ const App = () => {
 
   const addNote = (event) => {
     event.preventDefault();
-    const noteObject = {
-      content: newNote,
-      important: Math.random() < 0.5,
-      id: String(notes.length + 1),
-    };
+    const noteObject = { content: newNote, important: Math.random() < 0.5 };
 
-    setNotes([...notes, noteObject]);
-    setNewNote('');
+    notesService.create(noteObject).then((newNote) => {
+      setNotes(notes.concat(newNote));
+      setNewNote('');
+    });
   };
 
   const handleNoteChange = (event) => {
     setNewNote(event.target.value);
+  };
+
+  const handleToogleImportance = (id) => {
+    const note = notes.find((n) => n.id === id);
+    const changedNote = { ...note, important: !note.important };
+
+    notesService
+      .update(changedNote)
+      .then((updatedNote) => {
+        setNotes(notes.map((note) => (note.id === id ? updatedNote : note)));
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(`the note '${note.content}' was already deleted from server`);
+        setNotes(notes.filter((note) => note.id !== id));
+      });
   };
 
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
@@ -44,8 +56,12 @@ const App = () => {
         </button>
       </div>
       <ul>
-        {notesToShow.map((notes) => (
-          <Note key={notes.id} content={notes.content} />
+        {notesToShow.map((note) => (
+          <Note
+            key={note.id}
+            note={note}
+            toogleImportance={() => handleToogleImportance(note.id)}
+          />
         ))}
       </ul>
       <form onSubmit={addNote}>
