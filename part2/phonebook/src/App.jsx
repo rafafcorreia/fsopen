@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import NameFilter from './components/NameFilter';
-import NewContactForm from './components/NewContactForm';
-import ContactsList from './components/ContactsList';
-import axios from 'axios';
+import NewPersonForm from './components/NewPersonForm';
+import PersonsList from './components/PersonsList';
+import personsService from './services/persons';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,9 +11,7 @@ const App = () => {
   const [nameFilter, setNameFilter] = useState('');
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then((response) => setPersons(response.data));
+    personsService.getAll().then((contacts) => setPersons(contacts));
   }, []);
 
   const filteredPersons = nameFilter
@@ -37,8 +35,8 @@ const App = () => {
     }
 
     const newPerson = { name: cleanedNewName, number: newNumber.trim() };
-    axios.post('http://localhost:3001/persons', newPerson).then((response) => {
-      setPersons(persons.concat(response.data));
+    personsService.create(newPerson).then((person) => {
+      setPersons(persons.concat(person));
       setNewName('');
       setNewNumber('');
     });
@@ -60,14 +58,14 @@ const App = () => {
     <div>
       <h1>Phonebook</h1>
       <NameFilter nameFilter={nameFilter} onChange={handleChangeNameFilter} />
-      <NewContactForm
+      <NewPersonForm
         onChangeName={handleChangeName}
         onChangeNumber={handleChangeNumber}
         onSubmit={handleSubmit}
         newName={newName}
         newNumber={newNumber}
       />
-      <ContactsList filteredPersons={filteredPersons} />
+      <PersonsList filteredPersons={filteredPersons} />
     </div>
   );
 };

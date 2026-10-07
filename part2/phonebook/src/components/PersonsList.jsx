@@ -1,7 +1,7 @@
-const ContactsList = ({ filteredPersons }) => {
+const PersonsList = ({ filteredPersons }) => {
   return (
     <>
-      <h2>Contacts</h2>
+      <h2>Persons</h2>
       {filteredPersons.map((person) => (
         <p key={person.name}>
           {person.name} {person.number}
@@ -11,4 +11,4 @@ const ContactsList = ({ filteredPersons }) => {
   );
 };
 
-export default ContactsList;
+export default PersonsList;

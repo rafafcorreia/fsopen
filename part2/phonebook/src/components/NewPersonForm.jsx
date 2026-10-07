@@ -1,4 +1,4 @@
-const NewContactForm = ({
+const NewPersonForm = ({
   onSubmit,
   onChangeName,
   onChangeNumber,
@@ -7,7 +7,7 @@ const NewContactForm = ({
 }) => {
   return (
     <>
-      <h2>Add a new contact</h2>
+      <h2>Add a new person</h2>
       <form onSubmit={onSubmit}>
         <label htmlFor="name">Name: </label>
         <input onChange={onChangeName} value={newName} id="name" />
@@ -20,4 +20,4 @@ const NewContactForm = ({
   );
 };
 
-export default NewContactForm;
+export default NewPersonForm;
