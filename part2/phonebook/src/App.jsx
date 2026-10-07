@@ -37,10 +37,11 @@ const App = () => {
     }
 
     const newPerson = { name: cleanedNewName, number: newNumber.trim() };
-    const updatedPersons = persons.concat(newPerson);
-    setPersons(updatedPersons);
-    setNewName('');
-    setNewNumber('');
+    axios.post('http://localhost:3001/persons', newPerson).then((response) => {
+      setPersons(persons.concat(response.data));
+      setNewName('');
+      setNewNumber('');
+    });
   };
 
   const handleChangeName = (event) => {
