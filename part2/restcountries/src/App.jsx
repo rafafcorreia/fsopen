@@ -23,7 +23,7 @@ const App = () => {
     <>
       <label htmlFor="search">Find countries</label>
       <input type="text" id="search" value={query} onChange={queryOnChange} />
-      <Results results={results} query={query} />
+      <Results results={results} query={query} setQuery={setQuery} />
     </>
   );
 };

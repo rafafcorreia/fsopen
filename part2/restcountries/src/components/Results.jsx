@@ -1,7 +1,7 @@
 import CountriesList from './CountriesList';
 import CountryDetails from './CountryDetails';
 
-const Results = ({ results, query }) => {
+const Results = ({ results, query, setQuery }) => {
   const cleanedQuery = query.toLowerCase().trim();
   if (!cleanedQuery || !results)
     return <p>Enter a filter by name to start searching</p>;
@@ -17,7 +17,7 @@ const Results = ({ results, query }) => {
     return <p>Too many matches, specify another filter</p>;
 
   if (filteredCountries.length > 1)
-    return <CountriesList countries={filteredCountries} />;
+    return <CountriesList countries={filteredCountries} setQuery={setQuery} />;
 
   return <CountryDetails country={filteredCountries[0]} />;
 };
