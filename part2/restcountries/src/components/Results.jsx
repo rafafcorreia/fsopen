@@ -1,14 +1,12 @@
 import CountriesList from './CountriesList';
 import CountryDetails from './CountryDetails';
 
-const Results = ({ results, query, setQuery }) => {
-  const cleanedQuery = query.toLowerCase().trim();
-  if (!cleanedQuery || !results)
-    return <p>Enter a filter by name to start searching</p>;
+const Results = ({ filteredCountries, cleanedQuery, setSelectedCountry }) => {
+  if (filteredCountries.length === 1) {
+    return <CountryDetails country={filteredCountries[0]} />;
+  }
 
-  const filteredCountries = results.filter((country) =>
-    country.name.common.toLowerCase().includes(cleanedQuery),
-  );
+  if (!cleanedQuery) return <p>Enter a filter by name to start searching</p>;
 
   if (filteredCountries.length === 0)
     return <p>Found no matches for the current filter</p>;
@@ -17,9 +15,12 @@ const Results = ({ results, query, setQuery }) => {
     return <p>Too many matches, specify another filter</p>;
 
   if (filteredCountries.length > 1)
-    return <CountriesList countries={filteredCountries} setQuery={setQuery} />;
-
-  return <CountryDetails country={filteredCountries[0]} />;
+    return (
+      <CountriesList
+        countries={filteredCountries}
+        setSelectedCountry={setSelectedCountry}
+      />
+    );
 };
 
 export default Results;

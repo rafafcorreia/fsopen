@@ -4,7 +4,15 @@ import Results from './components/Results';
 
 const App = () => {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState(null);
+  const [results, setResults] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+
+  const cleanedQuery = query.toLowerCase().trim();
+  const filteredCountries = selectedCountry
+    ? [selectedCountry]
+    : results.filter((country) =>
+        country.name.common.toLowerCase().includes(cleanedQuery),
+      );
 
   useEffect(() => {
     console.log('effect');
@@ -17,13 +25,18 @@ const App = () => {
 
   const queryOnChange = (event) => {
     setQuery(event.target.value);
+    setSelectedCountry(null);
   };
 
   return (
     <>
       <label htmlFor="search">Find countries</label>
       <input type="text" id="search" value={query} onChange={queryOnChange} />
-      <Results results={results} query={query} setQuery={setQuery} />
+      <Results
+        filteredCountries={filteredCountries}
+        cleanedQuery={cleanedQuery}
+        setSelectedCountry={setSelectedCountry}
+      />
     </>
   );
 };
