@@ -1,3 +1,5 @@
+import Weather from './Weather';
+
 const CountryDetails = ({ country }) => {
   console.log(country);
   const languages = country.languages
@@ -25,6 +27,7 @@ const CountryDetails = ({ country }) => {
         </>
       )}
       <img src={country.flags.svg} alt={country.flags.alt} />
+      <Weather country={country} />
     </>
   );
 };
