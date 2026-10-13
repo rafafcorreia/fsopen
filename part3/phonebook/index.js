@@ -8,6 +8,13 @@ const persons = [
   { id: '4', name: 'Mary Poppendieck', number: '39-23-6423122' },
 ];
 
+app.get('/info', (request, response) => {
+  let html = `<p>Phonebook has info for ${persons.length} people</p>`;
+  html += `<p>${Date().toString()}</p>`;
+
+  response.status(200).send(html);
+});
+
 app.get('/api/persons', (request, response) => {
   response.json(persons);
 });
