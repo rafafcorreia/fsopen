@@ -42,11 +42,26 @@ app.delete('/api/persons/:id', (request, response) => {
 });
 
 app.post('/api/persons', (request, response) => {
-  const newPerson = {
-    id: generateId(),
-    name: request.body.name,
-    number: request.body.number,
-  };
+  const { name, number } = request.body;
+
+  if (!name || !number) {
+    return response
+      .status(400)
+      .json({ error: 'The name and number are required.' });
+  }
+
+  const isSameName = persons.find(
+    (p) => p.name.toLowerCase().trim() === name.toLowerCase().trim(),
+  );
+
+  if (isSameName) {
+    return response
+      .status(400)
+      .json({ error: `The name "${name}" already exists in the phonebook.` });
+  }
+
+  const newPerson = { id: generateId(), name: name, number: number };
+
   persons.push(newPerson);
   response.json(newPerson);
 });
