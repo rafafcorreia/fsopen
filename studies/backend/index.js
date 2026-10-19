@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors')
 const app = express();
 
 const requestLogger = (request, response, next) => {
@@ -15,6 +16,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(express.json());
 app.use(requestLogger);
+app.use(cors())
 
 let notes = [
   { id: '1', content: 'HTML is easy', important: true },
