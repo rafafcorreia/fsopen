@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const app = express();
+const cors = require('cors');
 
 const tinyData = (tokens, req, res) => {
   return [
@@ -16,6 +17,7 @@ const tinyData = (tokens, req, res) => {
 
 app.use(express.json());
 app.use(morgan(tinyData));
+app.use(cors());
 
 let persons = [
   { id: '1', name: 'Arto Hellas', number: '040-123456' },
