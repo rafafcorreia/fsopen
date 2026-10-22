@@ -97,8 +97,8 @@ const App = () => {
     const canDelete = confirm(`Delete ${person.name}?`);
     if (!canDelete) return;
 
-    personsService.exclude(person.id).then((deletedPerson) => {
-      setPersons((persons) => persons.filter((p) => p.id !== deletedPerson.id));
+    personsService.exclude(person.id).then(() => {
+      setPersons((persons) => persons.filter((p) => p.id !== person.id));
     });
   };
 
