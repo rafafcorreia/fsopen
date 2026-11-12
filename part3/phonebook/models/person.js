@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGODB_URI, { family: 4 });
 
-const Person = new mongoose.Schema({
+const personSchema = new mongoose.Schema({
   name: String,
   number: String,
 });
 
-Person.set('toJSON', {
+personSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
@@ -16,4 +16,4 @@ Person.set('toJSON', {
   },
 });
 
-module.exports = mongoose.model('Person', Person);
+module.exports = mongoose.model('Person', personSchema);

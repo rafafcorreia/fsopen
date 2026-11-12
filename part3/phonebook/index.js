@@ -28,11 +28,6 @@ let persons = [
   { id: '4', name: 'Mary Poppendieck', number: '39-23-6423122' },
 ];
 
-const generateId = () => {
-  const id = Math.floor(Math.random() * 1_000_000);
-  return String(id);
-};
-
 app.get('/info', (request, response) => {
   let html = `<p>Phonebook has info for ${persons.length} people</p>`;
   html += `<p>${Date().toString()}</p>`;
@@ -68,20 +63,20 @@ app.post('/api/persons', (request, response) => {
       .json({ error: 'The name and number are required.' });
   }
 
-  const isSameName = persons.find(
-    (p) => p.name.toLowerCase().trim() === name.toLowerCase().trim(),
-  );
+  Person.findOne({ name }).then((document) => {
+    if (document) {
+      return response
+        .status(400)
+        .json({ error: `The name "${name}" already exists in the phonebook.` });
+    }
 
-  if (isSameName) {
-    return response
-      .status(400)
-      .json({ error: `The name "${name}" already exists in the phonebook.` });
-  }
+    const person = new Person({
+      name,
+      number,
+    });
 
-  const newPerson = { id: generateId(), name: name, number: number };
-
-  persons.push(newPerson);
-  response.json(newPerson);
+    person.save().then((newPerson) => response.json(newPerson));
+  });
 });
 
 const PORT = process.env.PORT;
