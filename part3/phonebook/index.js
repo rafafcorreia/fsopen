@@ -17,6 +17,16 @@ const tinyData = (tokens, req, res) => {
   ].join(' ');
 };
 
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' });
+  }
+
+  next(error);
+};
+
 app.use(express.json());
 app.use(morgan(tinyData));
 app.use(express.static('dist'));
@@ -84,6 +94,8 @@ app.post('/api/persons', (request, response) => {
 });
 
 const PORT = process.env.PORT;
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
