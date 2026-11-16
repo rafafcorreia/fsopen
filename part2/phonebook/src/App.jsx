@@ -78,11 +78,8 @@ const App = () => {
         setNewName('');
         setNewNumber('');
       })
-      .catch(() => {
-        notify(
-          `Information of ${cleanedNewName} has already been removed from server`,
-          false,
-        );
+      .catch((error) => {
+        notify(error.response.data.error, false);
         personsService.getAll().then((persons) => setPersons(persons));
       });
   };
@@ -103,9 +100,15 @@ const App = () => {
     const canDelete = confirm(`Delete ${person.name}?`);
     if (!canDelete) return;
 
-    personsService.exclude(person.id).then(() => {
-      setPersons((persons) => persons.filter((p) => p.id !== person.id));
-    });
+    personsService
+      .exclude(person.id)
+      .then(() => {
+        setPersons((persons) => persons.filter((p) => p.id !== person.id));
+      })
+      .catch((error) => {
+        notify(error.response.data.error);
+        personsService.getAll().then((persons) => setPersons(persons));
+      });
   };
 
   return (
