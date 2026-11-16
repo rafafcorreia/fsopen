@@ -75,12 +75,6 @@ app.delete('/api/persons/:id', (request, response, next) => {
 app.post('/api/persons', (request, response, next) => {
   const { name, number } = request.body;
 
-  if (!name || !number) {
-    return response
-      .status(400)
-      .json({ error: 'The name and number are required.' });
-  }
-
   Person.findOne({ name })
     .then((document) => {
       if (document) {
