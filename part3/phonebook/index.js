@@ -41,8 +41,10 @@ app.get('/info', (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.get('/api/persons', (request, response) => {
-  Person.find({}).then((persons) => response.json(persons));
+app.get('/api/persons', (request, response, next) => {
+  Person.find({})
+    .then((persons) => response.json(persons))
+    .catch((error) => next(error));
 });
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -67,7 +69,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
     });
 });
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const { name, number } = request.body;
 
   if (!name || !number) {
@@ -76,20 +78,24 @@ app.post('/api/persons', (request, response) => {
       .json({ error: 'The name and number are required.' });
   }
 
-  Person.findOne({ name }).then((document) => {
-    if (document) {
-      return response
-        .status(400)
-        .json({ error: `The name "${name}" already exists in the phonebook.` });
-    }
+  Person.findOne({ name })
+    .then((document) => {
+      if (document) {
+        return response
+          .status(400)
+          .json({
+            error: `The name "${name}" already exists in the phonebook.`,
+          });
+      }
 
-    const person = new Person({
-      name,
-      number,
-    });
+      const person = new Person({
+        name,
+        number,
+      });
 
-    person.save().then((newPerson) => response.json(newPerson));
-  });
+      person.save().then((newPerson) => response.json(newPerson));
+    })
+    .catch((error) => next(error));
 });
 
 app.put('/api/persons/:id', (request, response, next) => {
