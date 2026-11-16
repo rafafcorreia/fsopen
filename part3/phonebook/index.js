@@ -81,11 +81,9 @@ app.post('/api/persons', (request, response, next) => {
   Person.findOne({ name })
     .then((document) => {
       if (document) {
-        return response
-          .status(400)
-          .json({
-            error: `The name "${name}" already exists in the phonebook.`,
-          });
+        return response.status(400).json({
+          error: `The name "${name}" already exists in the phonebook.`,
+        });
       }
 
       const person = new Person({
@@ -93,7 +91,7 @@ app.post('/api/persons', (request, response, next) => {
         number,
       });
 
-      person.save().then((newPerson) => response.json(newPerson));
+      return person.save().then((newPerson) => response.json(newPerson));
     })
     .catch((error) => next(error));
 });
@@ -110,12 +108,9 @@ app.put('/api/persons/:id', (request, response, next) => {
       person.name = name;
       person.number = number;
 
-      person
-        .save()
-        .then((updatedPerson) => {
-          response.json(updatedPerson);
-        })
-        .catch((error) => next(error));
+      return person.save().then((updatedPerson) => {
+        response.json(updatedPerson);
+      });
     })
     .catch((error) => next(error));
 });
