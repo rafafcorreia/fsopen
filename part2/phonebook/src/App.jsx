@@ -42,12 +42,18 @@ const App = () => {
 
     if (!existingPerson) {
       const newPerson = { name: cleanedNewName, number: cleanedNewNumber };
-      personsService.create(newPerson).then((person) => {
-        setPersons((persons) => persons.concat(person));
-        setNewName('');
-        setNewNumber('');
-        notify(`Added ${cleanedNewName}`);
-      });
+      personsService
+        .create(newPerson)
+        .then((person) => {
+          setPersons((persons) => persons.concat(person));
+          setNewName('');
+          setNewNumber('');
+          notify(`Added ${cleanedNewName}`);
+        })
+        .catch((error) => {
+          console.log(error.response.data.error);
+          notify(error.response.data.error, false);
+        });
       return;
     }
 
