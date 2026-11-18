@@ -16,4 +16,26 @@ const favoriteBlog = (blogs) => {
   return blogs.length > 0 ? blogs.reduce(reducer) : {};
 };
 
-module.exports = { dummy, totalLikes, favoriteBlog };
+const mostBlogs = (blogs) => {
+  if (blogs.length === 0) return {};
+
+  const blogsByAuthorMap = new Map();
+
+  blogs.forEach((blog) => {
+    blogsByAuthorMap.set(
+      blog.author,
+      (blogsByAuthorMap.get(blog.author) || 0) + 1,
+    );
+  });
+
+  const blogsByAuthorList = Array.from(blogsByAuthorMap);
+  const mostBlogsAuthor = blogsByAuthorList.reduce((top, current) => {
+    return current[1] > top[1] ? current : top;
+  });
+  return {
+    author: mostBlogsAuthor[0],
+    blogs: mostBlogsAuthor[1],
+  };
+};
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs };

@@ -136,3 +136,130 @@ describe('favorite blog', () => {
     assert.deepStrictEqual(listHelper.favoriteBlog(blogs), expectedBlog);
   });
 });
+describe('most blogs', () => {
+  test('of an empty list returns an empty object', () => {
+    assert.deepStrictEqual(listHelper.mostBlogs([]), {});
+  });
+
+  test('of a list with only one blog returns the author and blog count', () => {
+    const blogs = [
+      {
+        _id: '6afd934b98807b60d0c70de2',
+        title: 'Amaritudo cubitum absconditus admoveo volutabrum cur.',
+        author: 'Ezekiel Senger',
+        url: 'https://artistic-freezing.info',
+        likes: 42,
+        __v: 0,
+      },
+    ];
+
+    const expectedValue = {
+      author: 'Ezekiel Senger',
+      blogs: 1,
+    };
+
+    assert.deepStrictEqual(listHelper.mostBlogs(blogs), expectedValue);
+  });
+
+  test('of a large list returns the top author and blog count', () => {
+    const blogs = [
+      {
+        _id: '6afda3c0c702922b3781155f',
+        title:
+          'Cerno sollers curo natus varius conitor ascit subseco universe auctus.',
+        author: 'Jerrell Kautzer',
+        url: 'https://baggy-range.name/',
+        likes: 186,
+        __v: 0,
+      },
+      {
+        _id: '6afd934b98807b60d0c70de2',
+        title: 'Amaritudo cubitum absconditus admoveo volutabrum cur.',
+        author: 'Ezekiel Senger',
+        url: 'https://artistic-freezing.info',
+        likes: 42,
+        __v: 0,
+      },
+      {
+        _id: '6afd934b98807b60d0c70df3',
+        title: 'Lorem Ipsum.',
+        author: 'Ezekiel Senger',
+        url: 'https://artistic-freezing.test',
+        likes: 99,
+        __v: 0,
+      },
+      {
+        _id: '6afd935f98807b60d0c70de3',
+        title: 'Vilis vito audacia.',
+        author: 'Riley Johnson',
+        url: 'https://alarmed-sustenance.com/',
+        likes: 0,
+        __v: 0,
+      },
+    ];
+
+    const expectedValue = {
+      author: 'Ezekiel Senger',
+      blogs: 2,
+    };
+
+    const actualValue = listHelper.mostBlogs(blogs);
+
+    assert.deepStrictEqual(actualValue, expectedValue);
+  });
+
+  test('of a list with many top authors returns the first top author found and blog count', () => {
+    const blogs = [
+      {
+        _id: '6afda3c0c702922b3781155f',
+        title:
+          'Cerno sollers curo natus varius conitor ascit subseco universe auctus.',
+        author: 'Jerrell Kautzer',
+        url: 'https://baggy-range.name/',
+        likes: 186,
+        __v: 0,
+      },
+      {
+        _id: '6afd934b98807b60d0c70de2',
+        title: 'Amaritudo cubitum absconditus admoveo volutabrum cur.',
+        author: 'Ezekiel Senger',
+        url: 'https://artistic-freezing.info',
+        likes: 42,
+        __v: 0,
+      },
+      {
+        _id: '6afd935f98807b60d0c70de3',
+        title: 'Vilis vito audacia.',
+        author: 'Riley Johnson',
+        url: 'https://alarmed-sustenance.com/',
+        likes: 0,
+        __v: 0,
+      },
+      {
+        _id: '6afd934b98807b60d0c70df3',
+        title: 'Lorem Ipsum.',
+        author: 'Ezekiel Senger',
+        url: 'https://artistic-freezing.test',
+        likes: 99,
+        __v: 0,
+      },
+      {
+        _id: '6afd935f98807b60d0c70de3',
+        title: 'Test title',
+        author: 'Riley Johnson',
+        url: 'https://alarmed-sustenance.test/',
+        likes: 1_000,
+        __v: 0,
+      },
+    ];
+
+    const expectedValue = {
+      author: 'Ezekiel Senger',
+      blogs: 2,
+    };
+
+    const actualValue = listHelper.mostBlogs(blogs);
+
+    assert.deepStrictEqual(actualValue, expectedValue);
+  });
+});
