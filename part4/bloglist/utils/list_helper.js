@@ -38,4 +38,28 @@ const mostBlogs = (blogs) => {
   };
 };
 
-module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs };
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) return {};
+
+  const likesByAuthorMap = new Map();
+
+  blogs.forEach((blog) => {
+    likesByAuthorMap.set(
+      blog.author,
+      (likesByAuthorMap.get(blog.author) || 0) + blog.likes,
+    );
+  });
+
+  const mostLikedAuthor = Array.from(likesByAuthorMap).reduce(
+    (top, current) => {
+      return current[1] > top[1] ? current : top;
+    },
+  );
+
+  return {
+    author: mostLikedAuthor[0],
+    likes: mostLikedAuthor[1],
+  };
+};
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes };
