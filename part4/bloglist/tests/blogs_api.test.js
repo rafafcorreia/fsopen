@@ -22,6 +22,16 @@ describe('get all blogs', () => {
 
     assert.strictEqual(response.body.length, helper.initialBlogs.length);
   });
+
+  test('returns them with property id', async () => {
+    const blogs = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    assert(blogs.body[0]._id === undefined);
+    assert(blogs.body[0].id);
+  });
 });
 
 after(async () => {
