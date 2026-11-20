@@ -58,15 +58,14 @@ describe('create a blog', () => {
       `expected results length to be increased to ${blogsBefore.length + 1}, but found ${blogsAfter.length}`,
     );
 
-    const isNewBlogRetrieved = blogsAfter.some(
-      (b) =>
-        b.title === newBlog.title &&
-        b.author === newBlog.author &&
-        b.url === newBlog.url &&
-        b.likes === newBlog.likes,
+    const savedBlog = blogsAfter.find((b) => b.title === newBlog.title);
+
+    assert(
+      savedBlog,
+      `new blog title "${newBlog.title}" was not found in results:\n${JSON.stringify(blogsAfter, null, 2)}`,
     );
 
-    assert(isNewBlogRetrieved, 'new blog was not found in results');
+    assert.partialDeepStrictEqual(savedBlog, newBlog);
   });
 });
 
