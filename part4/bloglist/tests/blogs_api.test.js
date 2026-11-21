@@ -88,6 +88,34 @@ describe('create a blog', () => {
 
     assert.strictEqual(savedBlog.likes, expectedBlog.likes);
   });
+
+  test('without title returns a 400 status code', async () => {
+    const newBlog = {
+      author: 'Without title',
+      url: 'https://test-site.info/',
+      likes: 99,
+    };
+
+    await api.post('/api/blogs').send(newBlog).expect(400);
+
+    const blogsAfter = await helper.blogsInDb();
+    const savedBlog = blogsAfter.some((b) => b.author === newBlog.author);
+    assert.strictEqual(savedBlog, false);
+  });
+
+  test('without url returns a 400 status code', async () => {
+    const newBlog = {
+      title: 'Without url',
+      author: 'John Doe',
+      likes: 99,
+    };
+
+    await api.post('/api/blogs').send(newBlog).expect(400);
+
+    const blogsAfter = await helper.blogsInDb();
+    const savedBlog = blogsAfter.some((b) => b.title === newBlog.title);
+    assert.strictEqual(savedBlog, false);
+  });
 });
 
 after(async () => {
