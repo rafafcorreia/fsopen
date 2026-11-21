@@ -67,6 +67,27 @@ describe('create a blog', () => {
 
     assert.partialDeepStrictEqual(savedBlog, newBlog);
   });
+
+  test('without likes stores with 0 likes', async () => {
+    const newBlog = {
+      title: 'Lorem Ipsum',
+      author: 'John Doe',
+      url: 'https://test-site.info/',
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const expectedBlog = { ...newBlog, likes: 0 };
+
+    const blogsAfter = await helper.blogsInDb();
+    const savedBlog = blogsAfter.find((b) => b.title === newBlog.title);
+
+    assert.strictEqual(savedBlog.likes, expectedBlog.likes);
+  });
 });
 
 after(async () => {
