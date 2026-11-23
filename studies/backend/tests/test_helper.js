@@ -12,9 +12,9 @@ const initialNotes = [
 ];
 
 const nonExistingId = async () => {
-  const note = new Note({ content: 'test' });
+  const note = new Note({ content: 'Lorem Ipsum Test' });
   await note.save();
-  await note.delete();
+  await note.deleteOne();
   return note._id.toString();
 };
 
