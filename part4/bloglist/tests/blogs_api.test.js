@@ -118,6 +118,21 @@ describe('create a blog', () => {
   });
 });
 
+describe('delete a blog', () => {
+  test('with valid id succeeds with status 204', async () => {
+    const blogsBefore = await helper.blogsInDb();
+    const randomIndex = Math.floor(Math.random() * blogsBefore.length);
+    const randomBlog = blogsBefore[randomIndex];
+    await api.delete(`/api/blogs/${randomBlog.id}`).expect(204);
+
+    const blogsAfter = await helper.blogsInDb();
+    assert.strictEqual(blogsAfter.length, blogsBefore.length - 1);
+
+    const removedBlog = blogsAfter.some((b) => b.id === randomBlog.id);
+    assert.strictEqual(removedBlog, false);
+  });
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
