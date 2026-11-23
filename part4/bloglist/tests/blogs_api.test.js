@@ -122,7 +122,7 @@ describe('update a blog', () => {
   test('with valid id and data succeeds with status code 200', async () => {
     const blogsBefore = await helper.blogsInDb();
     const randomBlog = helper.getRandom(blogsBefore);
-    const changedBlog = { ...randomBlog, likes: randomBlog.likes++ };
+    const changedBlog = { ...randomBlog, likes: randomBlog.likes + 1 };
     const response = await api
       .put(`/api/blogs/${randomBlog.id}`)
       .send(changedBlog)
@@ -131,7 +131,7 @@ describe('update a blog', () => {
 
     assert.deepStrictEqual(response.body, changedBlog);
     const blogsAfter = await helper.blogsInDb();
-    const updatedBlog = blogsAfter.filter((b) => b.id === changedBlog.id);
+    const updatedBlog = blogsAfter.find((b) => b.id === changedBlog.id);
     assert.deepStrictEqual(updatedBlog, changedBlog);
   });
 });
@@ -139,8 +139,7 @@ describe('update a blog', () => {
 describe('delete a blog', () => {
   test('with valid id succeeds with status code 204', async () => {
     const blogsBefore = await helper.blogsInDb();
-    const randomIndex = Math.floor(Math.random() * blogsBefore.length);
-    const randomBlog = blogsBefore[randomIndex];
+    const randomBlog = helper.getRandom(blogsBefore);
     await api.delete(`/api/blogs/${randomBlog.id}`).expect(204);
 
     const blogsAfter = await helper.blogsInDb();
