@@ -52,7 +52,7 @@ describe('when there is initially some notes', () => {
       assert(contents.includes('async/await simplifies making async calls'));
     });
 
-    test('without content is not added', async () => {
+    test('without content property fails with status code 400', async () => {
       const newNote = {
         important: true,
       };
@@ -76,6 +76,16 @@ describe('when there is initially some notes', () => {
         .expect('Content-Type', /application\/json/);
 
       assert.deepStrictEqual(resultNote.body, noteToView);
+    });
+
+    test('fails with statuscode 404 if note does not exist', async () => {
+      const validNonExistingId = await helper.nonExistingId();
+      await api.get(`/api/notes/${validNonExistingId}`).expect(404);
+    });
+
+    test('fails with status code 400 if id format is invalid', async () => {
+      const invalidId = '123abc456def789ghi0j';
+      await api.get(`/api/notes/${invalidId}`).expect(400);
     });
   });
 
