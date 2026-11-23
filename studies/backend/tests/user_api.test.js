@@ -43,6 +43,26 @@ describe('when there is initially one user in db', () => {
     assert(savedUser);
     assert.strictEqual(savedUser.name, newUser.name);
   });
+
+  test('creation fails with status code 400 and a message if username already taken', async () => {
+    const usersBefore = await helper.usersInDb();
+
+    const newUser = {
+      username: 'root',
+      name: 'Superuser',
+      password: 'secretfoobar',
+    };
+
+    const response = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    const usersAfter = await helper.usersInDb();
+    assert.strictEqual(usersAfter.length, usersBefore.length);
+    assert(response.body.error.includes('expected `username` to be unique'));
+  });
 });
 
 after(async () => {
