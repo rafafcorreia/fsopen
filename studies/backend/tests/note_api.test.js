@@ -4,7 +4,9 @@ const supertest = require('supertest');
 const app = require('../app');
 const assert = require('node:assert');
 const Note = require('../models/note');
+const User = require('../models/user');
 const helper = require('./test_helper');
+const bcrypt = require('bcrypt');
 
 const api = supertest(app);
 
@@ -12,6 +14,14 @@ describe('when there is initially some notes', () => {
   beforeEach(async () => {
     await Note.deleteMany({});
     await Note.insertMany(helper.initialNotes);
+    await User.deleteMany({});
+
+    const passwordHash = await bcrypt.hash('sekret', 10);
+    const user = new User({
+      username: 'root',
+      passwordHash,
+    });
+    await user.save();
   });
 
   test('notes are returned as json', async () => {
@@ -34,9 +44,12 @@ describe('when there is initially some notes', () => {
 
   describe('adding a note', () => {
     test('with valid content succeeds with status code 201', async () => {
+      const users = await helper.usersInDb();
+      const userId = users[0].id;
       const newNote = {
         content: 'async/await simplifies making async calls',
         important: true,
+        userId,
       };
 
       await api
