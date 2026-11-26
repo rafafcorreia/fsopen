@@ -1,4 +1,6 @@
 const Blog = require('../models/blog');
+const User = require('../models/user');
+const bcrypt = require('bcrypt');
 
 const initialBlogs = [
   {
@@ -26,8 +28,25 @@ const getRandom = (list) => {
   return list[randomIndex];
 };
 
+const createUsers = async (users, saltRounds = 10) => {
+  for (const u of users) {
+    const newUser = structuredClone(u);
+    newUser.passwordHash = await bcrypt.hash(newUser.password, saltRounds);
+    delete newUser.password;
+    const user = new User(newUser);
+    await user.save();
+  }
+};
+
+const usersInDb = async () => {
+  const users = await User.find({});
+  return users.map((u) => u.toJSON());
+};
+
 module.exports = {
   initialBlogs,
   blogsInDb,
   getRandom,
+  createUsers,
+  usersInDb,
 };
