@@ -80,7 +80,7 @@ describe('given there are users with blogs', () => {
     });
 
     await t.test('returns correct content', () => {
-      assert.partialDeepStrictEqual(users, expectedUsers);
+      assert.deepStrictEqual(users, expectedUsers);
     });
 
     await t.test('returns only expected properties', () => {

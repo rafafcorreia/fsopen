@@ -20,11 +20,13 @@ const initialBlogs = [
 
 const blogsInDb = async (populate = true) => {
   let blogs;
+
   if (populate) {
-    blogs = await Blog.find({}).populate('user', {username: 1, name: 1, id: 1});
+    blogs = await Blog.find({}).populate('user', { username: 1, name: 1, id: 1 });
   } else {
     blogs = await Blog.find({});
   }
+
   return blogs.map((b) => b.toJSON());
 };
 
