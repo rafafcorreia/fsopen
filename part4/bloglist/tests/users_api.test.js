@@ -69,7 +69,7 @@ describe('given there are users', () => {
     });
 
     await t.test('returns only expected properties', () => {
-      const expectedKeys = expectedUsers.map(() => ['id', 'name', 'username']);
+      const expectedKeys = expectedUsers.map(() => ['blogs', 'id', 'name', 'username']);
       const actualKeys = users.map((u) => Object.keys(u).sort());
       assert.deepStrictEqual(actualKeys, expectedKeys);
     });
@@ -102,7 +102,7 @@ describe('given there are users', () => {
     });
 
     await t.test('returns only expected properties', () => {
-      const expectedKeys = ['id', 'name', 'username'];
+      const expectedKeys = ['blogs', 'id', 'name', 'username'];
       const actualKeys = Object.keys(returnedUser).sort();
       assert.deepStrictEqual(actualKeys, expectedKeys);
     });
@@ -291,7 +291,7 @@ describe('given there are users', () => {
     });
 
     await t.test('returns only expected properties', () => {
-      const expectedKeys = ['id', 'username'];
+      const expectedKeys = ['blogs', 'id', 'username'];
       const actualKeys = Object.keys(returnedUser).sort();
       assert.deepStrictEqual(actualKeys, expectedKeys);
     });
