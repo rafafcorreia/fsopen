@@ -18,8 +18,13 @@ const initialBlogs = [
   },
 ];
 
-const blogsInDb = async () => {
-  const blogs = await Blog.find({});
+const blogsInDb = async (populate = true) => {
+  let blogs;
+  if (populate) {
+    blogs = await Blog.find({}).populate('user', {username: 1, name: 1, id: 1});
+  } else {
+    blogs = await Blog.find({});
+  }
   return blogs.map((b) => b.toJSON());
 };
 
@@ -38,10 +43,28 @@ const createUsers = async (users, saltRounds = 10) => {
   }
 };
 
-const usersInDb = async () => {
-  const users = await User.find({});
+const usersInDb = async (populate = true) => {
+  let users;
+  if (populate) {
+    users = await User.find({}).populate('blogs', { url: 1, title:1, author: 1, id: 1 })
+  } else {
+    users = await User.find({})
+  }
   return users.map((u) => u.toJSON());
 };
+
+const createBlogs = async (blogs) => {
+  for (const b of blogs) {
+    const newBlog = structuredClone(b)
+    const user = await User.findOne({ username: newBlog.username })
+    newBlog.user = user.id
+    delete newBlog.username
+    const blog = new Blog(newBlog)
+    const savedBlog = await blog.save()
+    user.blogs = user.blogs.concat(savedBlog.id)
+    await user.save()
+  }
+}
 
 module.exports = {
   initialBlogs,
@@ -49,4 +72,5 @@ module.exports = {
   getRandom,
   createUsers,
   usersInDb,
+  createBlogs
 };

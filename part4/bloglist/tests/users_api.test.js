@@ -5,10 +5,12 @@ const app = require('../app');
 const supertest = require('supertest');
 const mongoose = require('mongoose');
 const helper = require('./test_helper');
+const Blog = require('../models/blog')
 
 const api = supertest(app);
 
 beforeEach(async () => {
+  await Blog.deleteMany({});
   await User.deleteMany({});
 });
 
@@ -27,8 +29,7 @@ describe('given there is no users', () => {
   });
 });
 
-describe('given there are users', () => {
-
+describe('given there are users with blogs', () => {
   beforeEach(async (t) => {
     t.initialUsers = [
       {
@@ -43,15 +44,29 @@ describe('given there are users', () => {
       },
     ];
 
+    t.initialBlogs = [
+      {
+        title: 'Lorem Ipsum',
+        author: 'John Doe',
+        url: 'https://test-site.info/',
+        likes: 42,
+        username: 'root'
+      },
+      {
+        title: 'Ipsum Lorem',
+        author: 'Doe John',
+        url: 'https://learn-cs.test/',
+        likes: 199,
+        username: 'root'
+      }
+    ];
+
     await helper.createUsers(t.initialUsers);
+    await helper.createBlogs(t.initialBlogs);
   })
 
   test('get all users', async (t) => {
-
-    const expectedUsers = t.initialUsers.map((u) => {
-      const { name, username } = u;
-      return { name, username };
-    });
+    const expectedUsers = await helper.usersInDb()
 
     const response = await api
       .get('/api/users')
@@ -76,8 +91,6 @@ describe('given there are users', () => {
   });
 
   test('create user with 3 characters long username and password', async (t) => {
-
-
     const usersBefore = await helper.usersInDb();
 
     const user = {
@@ -95,9 +108,9 @@ describe('given there are users', () => {
     const returnedUser = response.body;
     const usersAfter = await helper.usersInDb();
 
-    await t.test('returns the new user\'s username and name', () => {
+    await t.test('returns the correct content', () => {
       const { username, name } = user;
-      const expectedUser = { username, name };
+      const expectedUser = { username, name, blogs: [] };
       assert.partialDeepStrictEqual(returnedUser, expectedUser);
     });
 
@@ -110,7 +123,7 @@ describe('given there are users', () => {
     await t.test('is persisted correctly', () => {
       const savedUser = usersAfter.find((u) => u.username === user.username);
       const { username, name } = user;
-      const expectedUser = { username, name };
+      const expectedUser = { username, name, blogs: [] };
       assert.partialDeepStrictEqual(savedUser, expectedUser);
     });
 
