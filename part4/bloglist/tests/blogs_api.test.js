@@ -78,7 +78,7 @@ describe('when there are blogs already', () => {
     const blogsBefore = await helper.blogsInDb();
     const usersBefore = await helper.usersInDb()
 
-    await api
+    const response = await api
       .post('/api/blogs')
       .send(newBlog)
       .expect(201)
@@ -101,7 +101,16 @@ describe('when there are blogs already', () => {
     t.test('references the first user', () => {
       const { username, name, id } = usersBefore[0]
       const expectedUser = { username, name, id }
-      assert.deepStrictEqual(savedBlog.user, expectedUser.id)
+      assert.deepStrictEqual(savedBlog.user, expectedUser)
+    })
+
+    t.test('returns the new blog correctly', () => {
+      assert.partialDeepStrictEqual(response.body, newBlog)
+    })
+
+    t.test('returns new blog with reference to first user id', () => {
+      const {id} = usersBefore[0]
+      assert.strictEqual(response.body.user, id)
     })
   });
 
