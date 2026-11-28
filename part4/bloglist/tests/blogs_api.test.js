@@ -109,7 +109,7 @@ describe('when there are blogs already', () => {
     })
 
     t.test('returns new blog with reference to first user id', () => {
-      const { id } = usersBefore[0]
+      const {id} = usersBefore[0]
       assert.strictEqual(response.body.user, id)
     })
   });
